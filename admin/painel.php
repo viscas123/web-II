@@ -6,17 +6,14 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true) {
     exit;
 }
 
-// Para simplicidade, os produtos ficarão em arquivo JSON (produtos.json) na pasta adm
-$produtos_file = __DIR__ . "/produtos.json";
+require_once __DIR__ . '/../conexao.php'; // Caminho correto
 
-// Carrega produtos
-$produtos = [];
-if (file_exists($produtos_file)) {
-    $json = file_get_contents($produtos_file);
-    $produtos = json_decode($json, true);
-}
+// Carrega produtos do banco de dados
+$result = $conn->query("SELECT id, nome, preco, descricao FROM produtos");
+$produtos = $result->fetch_all(MYSQLI_ASSOC);
 
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -30,7 +27,6 @@ if (file_exists($produtos_file)) {
     <h1>Painel Administrativo</h1>
     <nav>
         <a href="cadastrar.php">Cadastrar Produto</a> |
-        <a href="editar.php">Editar Produto</a> |
         <a href="logout.php">Sair</a>
     </nav>
 </header>
@@ -45,6 +41,7 @@ if (file_exists($produtos_file)) {
                     <th>Nome</th>
                     <th>Preço</th>
                     <th>Descrição</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -53,6 +50,10 @@ if (file_exists($produtos_file)) {
                         <td><?= htmlspecialchars($produto['nome']) ?></td>
                         <td>R$ <?= number_format($produto['preco'], 2, ',', '.') ?></td>
                         <td><?= htmlspecialchars($produto['descricao']) ?></td>
+                        <td>
+                            <a href="editar.php?id=<?= $produto['id'] ?>">Editar</a> |
+                            <a href="excluir.php?id=<?= $produto['id'] ?>" onclick="return confirm('Tem certeza que deseja excluir este produto?');">Excluir</a>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

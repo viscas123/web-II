@@ -1,14 +1,16 @@
 <?php
 session_start();
 
-// Usuário fixo para demo
-$usuario_correto = "admin";
-$senha_correta = "123456";
+$admin_usuario = 'admin';      // usuário fixo do admin
+$admin_senha = '123456';       // senha fixa do admin (em texto plano)
 
+// Se o formulário foi enviado
 if (isset($_POST['usuario'], $_POST['senha'])) {
     $user = $_POST['usuario'];
     $pass = $_POST['senha'];
-    if ($user === $usuario_correto && $pass === $senha_correta) {
+
+    // Verifica se o usuário e senha batem com os fixos
+    if ($user === $admin_usuario && $pass === $admin_senha) {
         $_SESSION['logado'] = true;
         header('Location: painel.php');
         exit;
@@ -41,6 +43,7 @@ if (isset($_POST['usuario'], $_POST['senha'])) {
         <input type="password" name="senha" id="senha" required />
         <br><br>
         <button type="submit">Entrar</button>
+        <a href="../index.php"> Voltar </a>
     </form>
 </main>
 </body>
